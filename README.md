@@ -1,0 +1,2 @@
+# COT-GPT
+ This repository provides an in-depth implementation of the Chain of Thought (CoT) reasoning model. It demonstrates how the model enhances logical reasoning by breaking down complex problems into sequential, interpretable steps. The repository includes code, examples, and documentation to help users understand and apply Chain of Thought reasoning to various tasks, such as mathematical problem-solving, and commonsense reasoning.
