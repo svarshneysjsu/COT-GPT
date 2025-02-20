@@ -57,18 +57,37 @@ def display_sidebar():
         st.session_state["selected_conversation"] = None  # Track active conversation
 
     if sessions:
+        # Apply custom styles only to conversation history buttons
+        st.sidebar.markdown(
+            """
+            <style>
+            .conversation-button button {
+                width: 100%;
+                background-color: transparent;
+                border: none;
+                text-align: left;
+                padding: 8px;
+                font-size: 16px;
+            }
+            .conversation-button button:hover {
+                background-color: blue;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
         for i, session in enumerate(sessions, start=1):
             session_id = session[0]  # Extract session_id from tuple
             is_selected = session_id == st.session_state["selected_conversation"]
-
-            # Highlight selected conversation with a different style
-            button_style = "border: 2px solid blue; font-weight: bold;" if is_selected else ""
-
-            if st.sidebar.button(f"Conversation {i}", key=f"conv_{i}", help="Click to view chat history"):
-                st.session_state["session_id"] = session_id
-                st.session_state["messages"] = get_conversation_history(session_id)
-                st.session_state["selected_conversation"] = session_id  # Store selected session
-
+            if st.sidebar.button(f"Conversation {i}", key=f"conv_{i}", help="Click to view chat history", 
+                                 args=(session_id,), kwargs={}, 
+                                 use_container_width=True, 
+                                 disabled=False, 
+                                 on_click=lambda sid=session_id: (
+                                     st.session_state.update({"session_id": sid, "messages": get_conversation_history(sid), "selected_conversation": sid})
+                                 )):
+                pass
 
 def chat_interface():
     col1, col2 = st.columns([8, 2])
@@ -105,7 +124,6 @@ def chat_interface():
                 st.markdown(f"**You:** {message['content']}")
             else:
                 st.markdown(f"**Response:** {message['content']}")
-
 
 def main():
     initialize_database()
