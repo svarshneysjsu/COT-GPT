@@ -78,20 +78,26 @@ def chat_interface():
         if st.button("Start New Chat"):
             st.session_state["session_id"] = str(uuid.uuid4())  # Generate a new session ID
             st.session_state["messages"] = []
-    
-    user_input = st.text_input("Ask a question:", key="user_input")
+            st.session_state["user_input"] = ""  # Reset input state
+
+    # Use a temporary key to clear input safely
+    user_input = st.text_input("Ask a question:", key="temp_input", value=st.session_state.get("user_input", ""))
+
     if st.button("Send") and user_input:
         st.session_state["messages"].append({"role": "user", "content": user_input})
         save_message(st.session_state["session_id"], "user", user_input)
-        
+
         # Placeholder response (Replace this with actual model inference)
         response = "<Here will be the response from trained model>"
         st.session_state["messages"].append({"role": "bot", "content": response})
         save_message(st.session_state["session_id"], "bot", response)
-        
+
         # Clear input box after sending a message
-        st.session_state["user_input"] = ""
-    
+        st.session_state["user_input"] = ""  # Safe way to reset input without error
+
+        # Force rerun to refresh UI
+        st.rerun()
+
     # Display chat history
     for message in st.session_state["messages"]:
         if isinstance(message, dict) and "role" in message and "content" in message:
@@ -99,6 +105,7 @@ def chat_interface():
                 st.markdown(f"**You:** {message['content']}")
             else:
                 st.markdown(f"**Response:** {message['content']}")
+
 
 def main():
     initialize_database()
