@@ -31,5 +31,17 @@ def reset_users_table():
     finally:
         conn.close()
 
+def add_timestamp():
+    conn = sqlite3.connect("chat_history.db")
+    c = conn.cursor()
+
+    # Add a timestamp column to the existing conversations table
+    c.execute("ALTER TABLE conversations ADD COLUMN timestamp TEXT")
+
+    conn.commit()
+    conn.close()
+    print("✅ Timestamp column added.")
+
 if __name__ == "__main__":
-    reset_users_table()
+    # reset_users_table()
+    add_timestamp()
